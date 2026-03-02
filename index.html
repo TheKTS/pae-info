@@ -58,6 +58,15 @@
   .timeline-card p { font-size: 13px; color: #4a5568; margin-bottom: 6px; }
   .timeline-card .effect { font-size: 12px; color: #718096; font-style: italic; }
 
+  /* ===== 성과 카드 (골드 강조) ===== */
+  .timeline-item.achievement .timeline-dot { background: #d69e2e; box-shadow: 0 0 0 3px #d69e2e; }
+  .timeline-item.achievement .timeline-card { border: 2px solid #d69e2e; background: linear-gradient(135deg, #fffff0 0%, #fff 60%); }
+  .timeline-item.achievement .timeline-date { background: #d69e2e; }
+  .timeline-item.achievement .timeline-card h4 { color: #975a16; }
+  .achievement-badge { display: inline-block; background: #fefcbf; color: #975a16; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; letter-spacing: 0.5px; }
+  .achievement-num { font-size: 28px; font-weight: 800; color: #d69e2e; line-height: 1.2; }
+  .achievement-unit { font-size: 14px; color: #975a16; font-weight: 600; }
+
   /* ===== 운영 현황 ===== */
   .stats-row { display: flex; gap: 16px; margin-bottom: 30px; flex-wrap: wrap; clear: both; }
   .stat-card { flex: 1; min-width: 120px; background: #1a3c6e; color: #fff; border-radius: 10px; padding: 20px; text-align: center; }
@@ -207,8 +216,31 @@
         </div>
       </div>
 
-      <!-- 2025-07 -->
+      <!-- 2024-10 -->
       <div class="timeline-item right">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2024. 10</span>
+          <h4>BPO팀 창설 (PAE 기반 운영 설계)</h4>
+          <p>PAE 시스템을 핵심 인프라로 BPO팀을 신설. 팀 운영의 80% 이상을 PAE로 구동하며, 인당 관리 사업장을 40개 → 90개로 목표 설정.</p>
+          <div class="effect">PAE 기반 조직 설계 · 인당 생산성 2배 이상 목표</div>
+        </div>
+      </div>
+
+      <!-- 성과: 업무절감시간 월 100시간 돌파 (2024 하반기) -->
+      <div class="timeline-item left achievement">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2024 하반기</span>
+          <span class="achievement-badge">&#x1F3C6; 성과</span>
+          <h4>월간 업무절감 12일분 돌파</h4>
+          <p>PAE 시스템 20개 가동, 월간 업무절감 효과가 <strong>약 12일분</strong>(8시간/일 기준)을 돌파.</p>
+          <div class="effect">연간 약 150일분 업무 절감 달성</div>
+        </div>
+      </div>
+
+      <!-- 2025-07 -->
+      <div class="timeline-item left">
         <div class="timeline-dot"></div>
         <div class="timeline-card">
           <span class="timeline-date">2025. 07</span>
@@ -226,6 +258,54 @@
           <h4>System Revamp (Major Version 10)</h4>
           <p>버전 관리 체계를 전면 재설계하고 협업 환경을 강화하는 대규모 시스템 개선을 단행.</p>
           <div class="effect">협업 최적화 · 시스템 전면 개선</div>
+        </div>
+      </div>
+
+      <!-- 성과: BPO팀 목표 달성 (2026.01) -->
+      <div class="timeline-item right achievement">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2026. 01</span>
+          <span class="achievement-badge">&#x1F3C6; 성과</span>
+          <h4>BPO팀 인당 90개 사업장 달성</h4>
+          <p>2024년 10월 창설 시 설정한 <strong>인당 관리 사업장 90개</strong> 목표를 15개월 만에 달성. 기존 40개 대비 <strong>2.25배</strong> 생산성 향상.</p>
+          <div class="achievement-num">40 → 90<span class="achievement-unit">개/인</span></div>
+          <div class="effect">PAE 기반 생산성 혁신 입증</div>
+        </div>
+      </div>
+
+      <!-- 성과: 월간 업무절감 18일분 돌파 (2026.01) -->
+      <div class="timeline-item left achievement">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2026. 01</span>
+          <span class="achievement-badge">&#x1F3C6; 성과</span>
+          <h4>월간 업무절감 18일분 돌파</h4>
+          <p>PAE 시스템 25개 가동 기준, 월간 업무절감 효과가 <strong>약 18일분</strong>(8시간/일 기준)을 돌파. 연간 기준 <strong>약 218일분</strong>으로 실질적 인력 1명분에 해당.</p>
+          <div class="achievement-num">218<span class="achievement-unit">일/년</span></div>
+          <div class="effect">연간 인력 1명분 업무 절감 효과</div>
+        </div>
+      </div>
+
+      <!-- 2026-01 -->
+      <div class="timeline-item right">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2026. 01</span>
+          <h4>업무개선팀 신설</h4>
+          <p>경영개선팀에서 업무개선팀으로 개편. 팀장 1명 + 신규 2명 체제로 전환하여 개발·운영 역량 확대.</p>
+          <div class="effect">조직 개편 · 전담 인력 확보</div>
+        </div>
+      </div>
+
+      <!-- 2026-03 -->
+      <div class="timeline-item left">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2026. 03</span>
+          <h4>AI 기반 개발 체계 도입</h4>
+          <p>AI가 코드·문서·테스트 초안을 생성하고, 팀원이 검증하는 2단계 워크플로우를 확립. IT 경험이 없는 신규 인력도 즉시 투입 가능한 구조를 구축.</p>
+          <div class="effect">개발 생산성 약 3배 향상 · 탈속인화</div>
         </div>
       </div>
 
