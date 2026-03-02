@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAE - Process Automation by Excel</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Pretendard', '맑은 고딕', 'Malgun Gothic', sans-serif; background: #f5f7fa; color: #2d3748; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+  /* ===== 헤더 ===== */
+  .page-header { text-align: center; margin-bottom: 50px; }
+  .page-header h1 { font-size: 32px; color: #1a3c6e; margin-bottom: 8px; letter-spacing: -0.5px; }
+  .page-header .subtitle { font-size: 15px; color: #4a5568; }
+  .page-header .divider { width: 60px; height: 3px; background: #1a3c6e; margin: 16px auto 0; border-radius: 2px; }
+
+  /* ===== 섹션 공통 ===== */
+  .section { margin-bottom: 50px; }
+  .section-title { font-size: 22px; color: #1a3c6e; font-weight: 700; margin-bottom: 24px; padding-bottom: 10px; border-bottom: 2px solid #1a3c6e; }
+
+  /* ===== PAE 소개 ===== */
+  .intro-box { background: #fff; border-radius: 12px; padding: 30px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-left: 4px solid #1a3c6e; margin-bottom: 24px; }
+  .intro-box p { font-size: 15px; color: #4a5568; margin-bottom: 12px; }
+  .intro-box p:last-child { margin-bottom: 0; }
+
+  .features { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+  .feature-card { flex: 1; min-width: 200px; background: #fff; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .feature-icon { font-size: 32px; margin-bottom: 8px; }
+  .feature-card h4 { font-size: 14px; color: #1a3c6e; margin-bottom: 6px; }
+  .feature-card p { font-size: 12px; color: #718096; }
+
+  .effect-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+  .effect-col { flex: 1; min-width: 250px; background: #fff; border-radius: 10px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .effect-col.down { border-top: 3px solid #38a169; }
+  .effect-col.up { border-top: 3px solid #3182ce; }
+  .effect-col h4 { font-size: 15px; margin-bottom: 14px; }
+  .effect-col.down h4 { color: #38a169; }
+  .effect-col.up h4 { color: #3182ce; }
+  .effect-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 14px; color: #4a5568; }
+  .effect-item .arrow-down { color: #38a169; font-weight: 700; }
+  .effect-item .arrow-up { color: #3182ce; font-weight: 700; }
+
+  /* ===== 타임라인 ===== */
+  .timeline { position: relative; padding: 20px 0; overflow: hidden; }
+  .timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, #1a3c6e, #3182ce, #63b3ed); transform: translateX(-50%); border-radius: 2px; }
+  .timeline-item { position: relative; width: 50%; padding: 0 40px 40px; }
+  .timeline-item.left { left: 0; text-align: right; }
+  .timeline-item.right { left: 50%; text-align: left; }
+  .timeline-dot { position: absolute; top: 8px; width: 16px; height: 16px; background: #1a3c6e; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 0 0 3px #1a3c6e; z-index: 1; }
+  .timeline-item.left .timeline-dot { right: -8px; }
+  .timeline-item.right .timeline-dot { left: -8px; }
+  .timeline-card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); display: inline-block; text-align: left; max-width: 360px; }
+  .timeline-item.left .timeline-card { float: right; }
+  .timeline-item.right .timeline-card { float: left; }
+  .timeline-date { display: inline-block; background: #1a3c6e; color: #fff; font-size: 12px; font-weight: 600; padding: 3px 12px; border-radius: 12px; margin-bottom: 10px; }
+  .timeline-card h4 { font-size: 15px; color: #1a3c6e; margin-bottom: 8px; }
+  .timeline-card p { font-size: 13px; color: #4a5568; margin-bottom: 6px; }
+  .timeline-card .effect { font-size: 12px; color: #718096; font-style: italic; }
+
+  /* ===== 운영 현황 ===== */
+  .stats-row { display: flex; gap: 16px; margin-bottom: 30px; flex-wrap: wrap; clear: both; }
+  .stat-card { flex: 1; min-width: 120px; background: #1a3c6e; color: #fff; border-radius: 10px; padding: 20px; text-align: center; }
+  .stat-card .stat-num { font-size: 36px; font-weight: 700; }
+  .stat-card .stat-label { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+
+  .division { margin-bottom: 36px; }
+  .division-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding: 10px 16px; background: #edf2f7; border-radius: 8px; border-left: 4px solid #1a3c6e; }
+  .division-header h3 { font-size: 17px; color: #1a3c6e; }
+  .division-header .count { background: #1a3c6e; color: #fff; font-size: 12px; padding: 2px 10px; border-radius: 10px; }
+
+  .system-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+  .system-card { flex: 1; min-width: 260px; max-width: calc(50% - 7px); background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 3px solid #3182ce; }
+  .system-card h4 { font-size: 14px; color: #1a3c6e; margin-bottom: 10px; }
+  .system-card .sys-meta { font-size: 12px; color: #718096; margin-bottom: 10px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .system-card .sys-meta span { display: inline-flex; align-items: center; gap: 4px; }
+  .system-card .func-list { list-style: none; padding: 0; }
+  .system-card .func-list li { font-size: 13px; color: #4a5568; padding: 3px 0; padding-left: 14px; position: relative; }
+  .system-card .func-list li::before { content: ''; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; background: #3182ce; border-radius: 50%; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #ebf4ff; color: #2b6cb0; font-weight: 500; }
+
+  /* ===== 푸터 ===== */
+  .page-footer { text-align: center; padding: 30px 0 10px; font-size: 12px; color: #a0aec0; border-top: 1px solid #e2e8f0; margin-top: 20px; }
+
+  /* ===== 반응형 ===== */
+  @media (max-width: 700px) {
+    .timeline::before { left: 20px; }
+    .timeline-item { width: 100%; left: 0 !important; padding-left: 50px; padding-right: 10px; text-align: left !important; }
+    .timeline-item .timeline-dot { left: 12px !important; right: auto !important; }
+    .timeline-item .timeline-card { float: none !important; max-width: 100%; }
+    .system-card { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ===== 헤더 ===== -->
+  <div class="page-header">
+    <h1>PAE</h1>
+    <div class="subtitle">Process Automation by Excel</div>
+    <div class="divider"></div>
+  </div>
+
+  <!-- ===== 1. PAE 소개 ===== -->
+  <div class="section">
+    <div class="section-title">PAE란?</div>
+    <div class="intro-box">
+      <p><strong>PAE(Process Automation by Excel)</strong>는 복잡하고 반복되는 업무를 체계적으로 정비하고, 시스템 자동화를 통해 업무 효율을 극대화하는 <strong>전사 업무 자동화 플랫폼</strong>입니다.</p>
+      <p>우리관리 업무개선팀이 기획 · 개발한 Excel 기반 프로세스 자동화가 전사 업무 혁신을 선도합니다.</p>
+    </div>
+
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4CA;</div>
+        <h4>Excel 기반</h4>
+        <p>별도 설치 없이 익숙한 Excel 환경에서 바로 사용</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F517;</div>
+        <h4>시스템 연계</h4>
+        <p>W-ERP, Dooray, 문자나라 등 다양한 외부 시스템과 연동</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x26A1;</div>
+        <h4>전사 적용</h4>
+        <p>사무행정직 대부분의 업무를 자동화 가능</p>
+      </div>
+    </div>
+
+    <div class="effect-grid">
+      <div class="effect-col down">
+        <h4>&#x2193; 줄어드는 것</h4>
+        <div class="effect-item"><span class="arrow-down">&#x25BC;</span> 인위적 실수</div>
+        <div class="effect-item"><span class="arrow-down">&#x25BC;</span> 업무 리스크</div>
+        <div class="effect-item"><span class="arrow-down">&#x25BC;</span> 업무 스트레스</div>
+        <div class="effect-item"><span class="arrow-down">&#x25BC;</span> 업무 난이도</div>
+      </div>
+      <div class="effect-col up">
+        <h4>&#x2191; 늘어나는 것</h4>
+        <div class="effect-item"><span class="arrow-up">&#x25B2;</span> 업무 처리 속도</div>
+        <div class="effect-item"><span class="arrow-up">&#x25B2;</span> 자동화 보고</div>
+        <div class="effect-item"><span class="arrow-up">&#x25B2;</span> 위험 예방율</div>
+        <div class="effect-item"><span class="arrow-up">&#x25B2;</span> 근로자 분위기 · 근속기간</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 2. 연혁 ===== -->
+  <div class="section">
+    <div class="section-title">PAE 시스템 연혁</div>
+    <div class="timeline">
+
+      <!-- 2022-03 -->
+      <div class="timeline-item left">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2022. 03</span>
+          <h4>PAE 시스템 첫 도입</h4>
+          <p>자동계산 및 보고서 양식 생성 기능으로 전사 업무 자동화의 첫 걸음을 내딛다.</p>
+          <div class="effect">전사 업무 자동화 시작</div>
+        </div>
+      </div>
+
+      <!-- 2023-01 -->
+      <div class="timeline-item right">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2023. 01</span>
+          <h4>로그인 방식 변경</h4>
+          <p>WINE ID 로그인 및 W-ERP 사용자 인증 TOKEN 체계를 도입하여 보안과 접근성을 강화.</p>
+          <div class="effect">로그인 및 인증 체계 개선</div>
+        </div>
+      </div>
+
+      <!-- 2023-02 -->
+      <div class="timeline-item left">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2023. 02</span>
+          <h4>W-ERP API 개설 및 활용</h4>
+          <p>ERP 시스템과 데이터를 직접 연계하여 수작업 데이터 입력을 제거.</p>
+          <div class="effect">ERP 연계 데이터 자동화</div>
+        </div>
+      </div>
+
+      <!-- 2023-06 -->
+      <div class="timeline-item right">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2023. 06</span>
+          <h4>Dooray API 활용</h4>
+          <p>시스템 버전별 원격 관리, 다중 시스템 연계, 알림 기능을 제공하여 업무 관리를 자동화.</p>
+          <div class="effect">업무 관리 자동화 · 원격 관리</div>
+        </div>
+      </div>
+
+      <!-- 2023-07 -->
+      <div class="timeline-item left">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2023. 07</span>
+          <h4>문자나라 시스템 연계</h4>
+          <p>Excel에서 추출한 데이터를 기반으로 문자 발송을 자동화.</p>
+          <div class="effect">외부 커뮤니케이션 자동화</div>
+        </div>
+      </div>
+
+      <!-- 2025-07 -->
+      <div class="timeline-item right">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2025. 07</span>
+          <h4>신규 직원 증원</h4>
+          <p>업무개선팀 개발 인력을 확충하여 개발 · 운영 역량을 강화.</p>
+          <div class="effect">개발/운영 지원 강화</div>
+        </div>
+      </div>
+
+      <!-- 2025-11 -->
+      <div class="timeline-item left">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <span class="timeline-date">2025. 11</span>
+          <h4>System Revamp (Major Version 10)</h4>
+          <p>버전 관리 체계를 전면 재설계하고 협업 환경을 강화하는 대규모 시스템 개선을 단행.</p>
+          <div class="effect">협업 최적화 · 시스템 전면 개선</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== 3. 운영 현황 ===== -->
+  <div class="section">
+    <div class="section-title">PAE 운영 현황</div>
+
+    <!-- 통계 -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num">24</div>
+        <div class="stat-label">총 시스템</div>
+      </div>
+      <div class="stat-card" style="background: #2c5282;">
+        <div class="stat-num">6</div>
+        <div class="stat-label">우리관리</div>
+      </div>
+      <div class="stat-card" style="background: #2b6cb0;">
+        <div class="stat-num">17</div>
+        <div class="stat-label">SNC</div>
+      </div>
+      <div class="stat-card" style="background: #3182ce;">
+        <div class="stat-num">1</div>
+        <div class="stat-label">방재</div>
+      </div>
+    </div>
+
+    <!-- 우리관리 -->
+    <div class="division">
+      <div class="division-header">
+        <h3>우리관리</h3>
+        <span class="count">6개 시스템</span>
+      </div>
+      <div class="system-grid">
+
+        <div class="system-card">
+          <h4>영업회의자료 작성 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2023-06-01</span>
+            <span>&#x1F464; 영업본부 매니저</span>
+          </div>
+          <ul class="func-list">
+            <li>영업정보 관리</li>
+            <li>회의자료 생성 (PPT)</li>
+            <li>오류 검증</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">우리TIMS WIKI</span>
+            <span class="badge">우리TIMS 메신저</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>영업회의자료 취합 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2023-06-01</span>
+            <span>&#x1F464; 영업지원팀장</span>
+          </div>
+          <ul class="func-list">
+            <li>그룹별 영업정보 조회</li>
+            <li>그룹별 회의자료 생성 (PPT)</li>
+            <li>오류 검증</li>
+            <li>회의양식 설정값 원격설정</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">우리TIMS WIKI</span>
+            <span class="badge">우리TIMS 메신저</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>계약서 작성 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2023-07-01</span>
+            <span>&#x1F464; 영업본부 매니저</span>
+          </div>
+          <ul class="func-list">
+            <li>계약서 생성</li>
+            <li>표준과달리정한사항 생성</li>
+            <li>계약체결 보고 품의서 생성</li>
+            <li>계약 체결 시 체크사항 검증</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">W-ERP</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>사령장 생성 및 발송 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2023-12-15</span>
+            <span>&#x1F464; HR팀</span>
+          </div>
+          <ul class="func-list">
+            <li>사령장 수령 대상자 관리</li>
+            <li>사령장 생성</li>
+            <li>사령장 메일발송</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">Outlook</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>교육현황 관리 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2024-01-01</span>
+            <span>&#x1F464; HR팀</span>
+          </div>
+          <ul class="func-list">
+            <li>미수료 대상자 조회</li>
+            <li>미수료자 문자발송</li>
+            <li>수료 현황 보고서 생성</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">우리ON</span>
+            <span class="badge">문자나라</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>시니어인턴쉽 관리 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2024-07-01</span>
+            <span>&#x1F464; 업무개선팀</span>
+          </div>
+          <ul class="func-list">
+            <li>지원금 대상자 추출</li>
+            <li>신청 및 지원금 수령현황 관리</li>
+            <li>지원사업 참여 방법 안내</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">우리TIMS WIKI</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SNC -->
+    <div class="division">
+      <div class="division-header">
+        <h3>SNC</h3>
+        <span class="count">17개 시스템</span>
+      </div>
+      <div class="system-grid">
+
+        <div class="system-card">
+          <h4>SNC실적 관리 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2022-06-01</span>
+            <span>&#x1F464; 재무관리팀장 / SNC지원팀장</span>
+          </div>
+          <ul class="func-list">
+            <li>실적 데이터 관리</li>
+            <li>실적 데이터 집계 (월/연/전월 비교)</li>
+            <li>회의자료 생성</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>도급내역 산출 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2022-03-01</span>
+            <span>&#x1F464; SNC사업부 본부장/매니저</span>
+          </div>
+          <ul class="func-list">
+            <li>도급내역/내부예산서 생성</li>
+            <li>근로자 임금 검증</li>
+            <li>전의 견적서와 비교</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>도급비청구 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2022-04-01</span>
+            <span>&#x1F464; BPO팀</span>
+          </div>
+          <ul class="func-list">
+            <li>근로자별 임금 계산</li>
+            <li>연차/퇴직금 대상자 알림</li>
+            <li>청구서 및 공문서 자동생성</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>경비업 행정업무 지원 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2023-06-01</span>
+            <span>&#x1F464; SNC사업부 지원팀</span>
+          </div>
+          <ul class="func-list">
+            <li>근무상황일지 초안생성</li>
+            <li>직무교육 미수료자 조회</li>
+            <li>서명일지 생성</li>
+            <li>순회점검 계획표/결과표 생성</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>급여지급 검토 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2023-06-15</span>
+            <span>&#x1F464; BPO팀장</span>
+          </div>
+          <ul class="func-list">
+            <li>사업장 별 급여 지급정보 검토</li>
+            <li>예산 대조</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>출근부 요청 문자발송 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2023-07-01</span>
+            <span>&#x1F464; BPO팀</span>
+          </div>
+          <ul class="func-list">
+            <li>사업장별 출근부 접수현황 조회</li>
+            <li>미제출 사업장 조회</li>
+            <li>미제출 사업장 문자발송</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+            <span class="badge">문자나라</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>피복주문 요청 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2023-12-01</span>
+            <span>&#x1F464; BPO팀</span>
+          </div>
+          <ul class="func-list">
+            <li>피복 주문 기능</li>
+            <li>사업장 별 예산잔액 조회</li>
+            <li>피복 상세정보 조회</li>
+            <li>지급 특이사항 조회</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+            <span class="badge">우리TIMS WIKI</span>
+            <span class="badge">우리TIMS 메신저</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>피복발주 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2023-12-01</span>
+            <span>&#x1F464; BPO팀</span>
+          </div>
+          <ul class="func-list">
+            <li>피복 주문정보 조회</li>
+            <li>피복발주서 생성</li>
+            <li>발주서 메일발송</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+            <span class="badge">우리TIMS WIKI</span>
+            <span class="badge">우리TIMS 메신저</span>
+            <span class="badge">Outlook</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>피복예산관리 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2023-12-01</span>
+            <span>&#x1F464; BPO팀</span>
+          </div>
+          <ul class="func-list">
+            <li>사업장 별 예산관리</li>
+            <li>월별 지급 품목내역 관리</li>
+            <li>피복 상세정보 관리</li>
+            <li>지급 특이사항 관리</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+            <span class="badge">우리TIMS WIKI</span>
+            <span class="badge">우리TIMS 메신저</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>시즌피복 집계 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2024-04-01</span>
+            <span>&#x1F464; BPO팀</span>
+          </div>
+          <ul class="func-list">
+            <li>사업장별 주문정보 자동 집계</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>시즌피복 취합 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2024-04-01</span>
+            <span>&#x1F464; BPO팀</span>
+          </div>
+          <ul class="func-list">
+            <li>사업장별 주문내용 단체발주</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>입퇴사정보 조회 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2024-08-01</span>
+            <span>&#x1F464; BPO팀</span>
+          </div>
+          <ul class="func-list">
+            <li>월별 입/퇴사자 조회</li>
+            <li>사업장 직책별 T/O 조회 및 오차분석</li>
+            <li>본부별 T/O 오류 리스트 조회</li>
+            <li>근로자별 서류제출 현황 조회</li>
+            <li>본부별 메일발송</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+            <span class="badge">Outlook</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>순회점검 서명일지 생성 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2025-03-01</span>
+            <span>&#x1F464; SNC지원팀</span>
+          </div>
+          <ul class="func-list">
+            <li>사업장별 순회점검 서명일지 생성</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>무전기 예산 관리 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2025-05-01</span>
+            <span>&#x1F464; SNC지원팀</span>
+          </div>
+          <ul class="func-list">
+            <li>무전기 예산 관리</li>
+            <li>구매내역 및 재고 관리</li>
+            <li>품의서 생성</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>순찰기 예산 관리 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2025-05-01</span>
+            <span>&#x1F464; SNC지원팀</span>
+          </div>
+          <ul class="func-list">
+            <li>순찰기 예산 관리</li>
+            <li>구매내역 및 재고 관리</li>
+            <li>품의서 생성</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+          </div>
+        </div>
+
+        <div class="system-card">
+          <h4>급여명세서 문자 발송 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2025-12-01</span>
+            <span>&#x1F464; SNC지원팀</span>
+          </div>
+          <ul class="func-list">
+            <li>급여명세서 조회 임시링크 생성</li>
+            <li>급여명세서 문자 발송</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNC-ERP</span>
+            <span class="badge">우리TIMS WIKI</span>
+            <span class="badge">문자나라</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 방재 -->
+    <div class="division">
+      <div class="division-header">
+        <h3>방재</h3>
+        <span class="count">1개 시스템</span>
+      </div>
+      <div class="system-grid">
+
+        <div class="system-card">
+          <h4>사업부 기여도 관리 시스템</h4>
+          <div class="sys-meta">
+            <span>&#x1F4C5; 2022-07-02</span>
+            <span>&#x1F464; 방재사업부 지원팀</span>
+          </div>
+          <ul class="func-list">
+            <li>우리관리 본부 기여 현황 관리</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">W-ERP</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== 푸터 ===== -->
+  <div class="page-footer">
+    우리관리 업무개선팀 &middot; PAE (Process Automation by Excel) &middot; 2026
+  </div>
+
+</div>
+</body>
+</html>
