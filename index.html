@@ -89,6 +89,26 @@
   .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
   .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #ebf4ff; color: #2b6cb0; font-weight: 500; }
 
+  /* ===== V11 소개 섹션 ===== */
+  .v11-header { text-align: center; margin-bottom: 28px; }
+  .v11-header .version-tag { display: inline-block; background: linear-gradient(135deg, #1a3c6e, #3182ce); color: #fff; font-size: 13px; font-weight: 700; padding: 4px 16px; border-radius: 16px; margin-bottom: 12px; letter-spacing: 0.5px; }
+  .v11-header p { font-size: 14px; color: #4a5568; }
+  .v11-grid { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 28px; }
+  .v11-card { flex: 1; min-width: 260px; max-width: calc(50% - 7px); background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid #3182ce; }
+  .v11-card .v11-icon { font-size: 26px; margin-bottom: 8px; }
+  .v11-card h4 { font-size: 14px; color: #1a3c6e; margin-bottom: 8px; }
+  .v11-card p { font-size: 12.5px; color: #4a5568; line-height: 1.55; }
+  .v11-card .v11-tag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 3px; background: #ebf4ff; color: #2b6cb0; font-weight: 500; margin-top: 8px; }
+  .v11-compare { display: flex; gap: 20px; flex-wrap: wrap; }
+  .v11-compare-col { flex: 1; min-width: 250px; background: #fff; border-radius: 10px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .v11-compare-col.before { border-top: 3px solid #a0aec0; }
+  .v11-compare-col.after { border-top: 3px solid #3182ce; }
+  .v11-compare-col h4 { font-size: 14px; margin-bottom: 12px; }
+  .v11-compare-col.before h4 { color: #718096; }
+  .v11-compare-col.after h4 { color: #3182ce; }
+  .v11-compare-item { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; font-size: 13px; color: #4a5568; }
+  .v11-compare-item .icon { flex-shrink: 0; width: 18px; text-align: center; }
+
   /* ===== 푸터 ===== */
   .page-footer { text-align: center; padding: 30px 0 10px; font-size: 12px; color: #a0aec0; border-top: 1px solid #e2e8f0; margin-top: 20px; }
 
@@ -312,7 +332,85 @@
     </div>
   </div>
 
-  <!-- ===== 3. 운영 현황 ===== -->
+  <!-- ===== 3. Version 11 소개 ===== -->
+  <div class="section">
+    <div class="section-title">PAE Core Version 11 — 주요 변화</div>
+
+    <div class="v11-header">
+      <span class="version-tag">v10 &#x2192; v11 Major Update</span>
+      <p>2025년 11월, PAE 핵심 엔진을 전면 재설계하여 <strong>체계적이고 확장 가능한 구조</strong>로 전환했습니다.</p>
+    </div>
+
+    <div class="v11-grid">
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x1F3D7;</div>
+        <h4>모듈 아키텍처 재설계</h4>
+        <p>비구조화된 레거시 코드를 도메인별로 분류하고, 54개 모듈을 계층적으로 재구성. 유지보수성과 확장성을 대폭 향상.</p>
+        <span class="v11-tag">54개 모듈 · 도메인별 구조화</span>
+      </div>
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x2601;</div>
+        <h4>클라우드 DB 도입</h4>
+        <p>Supabase 기반 8개 테이블을 신설하여 시스템 메타정보, 버전, 권한, 에러 로그, 배포 이력 등을 클라우드에서 통합 관리.</p>
+        <span class="v11-tag">Supabase · 8개 테이블</span>
+      </div>
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x1F680;</div>
+        <h4>배포 자동화</h4>
+        <p>7단계 배포 파이프라인을 구축하여, 개발 완료 후 원클릭으로 시스템 배포·버전 등록·이력 기록까지 자동 수행.</p>
+        <span class="v11-tag">7단계 자동 배포</span>
+      </div>
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x1F512;</div>
+        <h4>사용자 권한 체계</h4>
+        <p>기존 하드코딩 방식을 DB 기반 권한 테이블로 전환. 시스템별 접근 제어, 개인정보 동의 이력까지 체계적으로 관리.</p>
+        <span class="v11-tag">DB 기반 권한 관리</span>
+      </div>
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x1F4CB;</div>
+        <h4>시스템 관제 강화</h4>
+        <p>에러 로그 자동 기록, 로그인 이력 추적, 4개 카테고리 시스템 진단 기능을 도입하여 실시간 운영 모니터링 체계 구축.</p>
+        <span class="v11-tag">에러 로그 · 진단 · 모니터링</span>
+      </div>
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x1F310;</div>
+        <h4>API 연계 중앙화</h4>
+        <p>Dooray·W-ERP·SNC-ERP 등 외부 시스템 연계를 중앙화된 Core/Endpoint 패턴으로 통합. 인증 자동 주입, URL 빌더 표준화.</p>
+        <span class="v11-tag">Core/Endpoint 패턴</span>
+      </div>
+
+    </div>
+
+    <div class="v11-compare">
+      <div class="v11-compare-col before">
+        <h4>&#x23EA; Before (v10)</h4>
+        <div class="v11-compare-item"><span class="icon">&#x2716;</span> 수동 배포 (파일 복사)</div>
+        <div class="v11-compare-item"><span class="icon">&#x2716;</span> 하드코딩 권한 관리</div>
+        <div class="v11-compare-item"><span class="icon">&#x2716;</span> 에러 로그 미기록</div>
+        <div class="v11-compare-item"><span class="icon">&#x2716;</span> 비구조화 모듈 (CM_/CF_)</div>
+        <div class="v11-compare-item"><span class="icon">&#x2716;</span> API별 개별 구현</div>
+        <div class="v11-compare-item"><span class="icon">&#x2716;</span> 개인정보 관리 미구현</div>
+      </div>
+      <div class="v11-compare-col after">
+        <h4>&#x23E9; After (v11)</h4>
+        <div class="v11-compare-item"><span class="icon">&#x2714;</span> 7단계 원클릭 자동 배포</div>
+        <div class="v11-compare-item"><span class="icon">&#x2714;</span> DB 기반 권한 CRUD</div>
+        <div class="v11-compare-item"><span class="icon">&#x2714;</span> 에러·로그인·배포 이력 자동 기록</div>
+        <div class="v11-compare-item"><span class="icon">&#x2714;</span> 도메인별 54개 모듈 구조화</div>
+        <div class="v11-compare-item"><span class="icon">&#x2714;</span> 중앙화된 Core/Endpoint 패턴</div>
+        <div class="v11-compare-item"><span class="icon">&#x2714;</span> 개인정보 동의 + 정책 관리</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== 4. 운영 현황 ===== -->
   <div class="section">
     <div class="section-title">PAE 운영 현황</div>
 
