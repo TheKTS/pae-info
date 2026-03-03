@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAE Core Version 10 — 구조 소개</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Pretendard', '맑은 고딕', 'Malgun Gothic', sans-serif; background: #f5f7fa; color: #2d3748; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+  /* ===== 헤더 ===== */
+  .page-header { text-align: center; margin-bottom: 44px; }
+  .page-header h1 { font-size: 30px; color: #1a3c6e; margin-bottom: 6px; letter-spacing: -0.5px; }
+  .page-header .subtitle { font-size: 15px; color: #4a5568; margin-bottom: 14px; }
+  .page-header .version-tag { display: inline-block; background: linear-gradient(135deg, #4a5568, #718096); color: #fff; font-size: 13px; font-weight: 700; padding: 5px 20px; border-radius: 20px; letter-spacing: 0.5px; }
+  .page-header .divider { width: 60px; height: 3px; background: #1a3c6e; margin: 18px auto 0; border-radius: 2px; }
+
+  /* ===== 섹션 공통 ===== */
+  .section { margin-bottom: 44px; }
+  .section-title { font-size: 20px; color: #1a3c6e; font-weight: 700; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 2px solid #1a3c6e; }
+
+  /* ===== 개요 박스 ===== */
+  .overview-box { background: #fff; border-radius: 12px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-left: 4px solid #1a3c6e; margin-bottom: 24px; }
+  .overview-box p { font-size: 14.5px; color: #4a5568; margin-bottom: 10px; }
+  .overview-box p:last-child { margin-bottom: 0; }
+  .overview-stats { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+  .overview-stat { flex: 1; min-width: 130px; background: #1a3c6e; color: #fff; border-radius: 10px; padding: 16px; text-align: center; }
+  .overview-stat .num { font-size: 28px; font-weight: 700; }
+  .overview-stat .label { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+
+  /* ===== 설계 특징 카드 ===== */
+  .feature-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+  .feature-card { flex: 1; min-width: 260px; max-width: calc(50% - 7px); background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid #718096; }
+  .feature-card .feat-icon { font-size: 26px; margin-bottom: 8px; }
+  .feature-card h4 { font-size: 14px; color: #1a3c6e; margin-bottom: 8px; }
+  .feature-card p { font-size: 12.5px; color: #4a5568; line-height: 1.55; }
+  .feature-card .feat-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #edf2f7; color: #4a5568; font-weight: 500; margin-top: 10px; }
+
+  /* ===== 모듈 구성 ===== */
+  .module-grid { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 24px; }
+  .module-card { flex: 1; min-width: 200px; background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
+  .module-card .module-icon { font-size: 28px; margin-bottom: 6px; }
+  .module-card h4 { font-size: 13px; color: #1a3c6e; margin-bottom: 6px; }
+  .module-card .module-count { font-size: 22px; font-weight: 700; color: #3182ce; }
+  .module-card .module-desc { font-size: 11.5px; color: #718096; margin-top: 4px; }
+
+  /* ===== 모듈 상세 테이블 ===== */
+  .detail-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .detail-table thead { background: #1a3c6e; color: #fff; }
+  .detail-table th { padding: 10px 14px; font-size: 12.5px; font-weight: 600; text-align: left; }
+  .detail-table td { padding: 9px 14px; font-size: 12.5px; color: #4a5568; border-bottom: 1px solid #edf2f7; }
+  .detail-table tr:last-child td { border-bottom: none; }
+  .detail-table .prefix { font-weight: 600; color: #2b6cb0; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; }
+
+  /* ===== 접두어 규칙 ===== */
+  .prefix-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+  .prefix-card { flex: 1; min-width: 200px; background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 3px solid #3182ce; }
+  .prefix-card h4 { font-size: 16px; color: #1a3c6e; margin-bottom: 4px; font-family: 'Consolas', 'Courier New', monospace; }
+  .prefix-card .prefix-full { font-size: 12px; color: #718096; margin-bottom: 8px; }
+  .prefix-card .prefix-desc { font-size: 12.5px; color: #4a5568; }
+  .prefix-card .prefix-count { display: inline-block; background: #ebf4ff; color: #2b6cb0; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-top: 8px; }
+
+  /* ===== API 연계 ===== */
+  .api-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+  .api-card { flex: 1; min-width: 250px; background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .api-card h4 { font-size: 14px; color: #1a3c6e; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .api-card .api-icon { font-size: 22px; }
+  .api-card .api-list { list-style: none; padding: 0; }
+  .api-card .api-list li { font-size: 12.5px; color: #4a5568; padding: 3px 0 3px 14px; position: relative; }
+  .api-card .api-list li::before { content: ''; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; background: #3182ce; border-radius: 50%; }
+  .api-card .api-count { display: inline-block; background: #ebf4ff; color: #2b6cb0; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-top: 10px; }
+
+  /* ===== 기술 스택 ===== */
+  .tech-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .tech-badge { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #2d3748; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .tech-badge .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .tech-badge .dot.blue { background: #3182ce; }
+  .tech-badge .dot.green { background: #38a169; }
+  .tech-badge .dot.purple { background: #805ad5; }
+  .tech-badge .dot.orange { background: #dd6b20; }
+  .tech-badge .dot.navy { background: #1a3c6e; }
+
+  /* ===== 푸터 ===== */
+  .page-footer { text-align: center; padding: 30px 0 10px; font-size: 12px; color: #a0aec0; border-top: 1px solid #e2e8f0; margin-top: 20px; }
+
+  /* ===== 반응형 ===== */
+  @media (max-width: 700px) {
+    .feature-card, .prefix-card, .api-card { max-width: 100%; }
+    .module-card { min-width: 140px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ===== 헤더 ===== -->
+  <div class="page-header">
+    <h1>PAE Core Version 10</h1>
+    <div class="subtitle">구조 소개</div>
+    <span class="version-tag">PAE-10 &middot; Legacy Core &middot; 2022 ~ 2025</span>
+    <div class="divider"></div>
+  </div>
+
+  <!-- ===== 1. 개요 ===== -->
+  <div class="section">
+    <div class="section-title">개요</div>
+    <div class="overview-box">
+      <p><strong>PAE Core Version 10</strong>은 2022년 PAE 시스템 첫 도입부터 2025년 11월 v11 전환까지 약 3년간 운영된 코어 엔진입니다.</p>
+      <p>기능별로 세분화된 모듈 구조를 채택하여, 초기화(Init)와 실행(Execute)을 분리하는 패턴으로 설계되었습니다. 총 <strong>93개 모듈</strong>이 평면 구조로 배치되어 있으며, 25개 PAE 시스템의 기반이 되었습니다.</p>
+    </div>
+    <div class="overview-stats">
+      <div class="overview-stat">
+        <div class="num">93</div>
+        <div class="label">Core 모듈</div>
+      </div>
+      <div class="overview-stat" style="background: #2c5282;">
+        <div class="num">80</div>
+        <div class="label">표준 모듈 (.bas)</div>
+      </div>
+      <div class="overview-stat" style="background: #2b6cb0;">
+        <div class="num">12</div>
+        <div class="label">UserForm (.frm)</div>
+      </div>
+      <div class="overview-stat" style="background: #3182ce;">
+        <div class="num">1</div>
+        <div class="label">클래스 (.cls)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 2. 접두어 규칙 ===== -->
+  <div class="section">
+    <div class="section-title">파일 명명 규칙</div>
+    <div class="prefix-grid">
+      <div class="prefix-card">
+        <h4>CM_</h4>
+        <div class="prefix-full">Core Module</div>
+        <div class="prefix-desc">표준 모듈. API 연동, 유틸리티, 기능 로직, 로그인 등 모든 핵심 기능을 포함.</div>
+        <span class="prefix-count">80개</span>
+      </div>
+      <div class="prefix-card">
+        <h4>CF_</h4>
+        <div class="prefix-full">Core Form</div>
+        <div class="prefix-desc">UserForm UI 모듈. 로그인, 시스템 관리, 정렬, 배포 알림 등 사용자 인터페이스 담당.</div>
+        <span class="prefix-count">12개</span>
+      </div>
+      <div class="prefix-card">
+        <h4>cls</h4>
+        <div class="prefix-full">Class Module</div>
+        <div class="prefix-desc">HTTP 통신 전용 클래스 모듈 (clsHttpClient). REST API 호출의 기반.</div>
+        <span class="prefix-count">1개</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 3. 설계 특징 ===== -->
+  <div class="section">
+    <div class="section-title">설계 특징</div>
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <div class="feat-icon">&#x1F4C2;</div>
+        <h4>평면 폴더 구조</h4>
+        <p>모든 93개 모듈이 단일 폴더에 배치. 하위 폴더 없이 파일명의 접두어와 계층 규칙으로 분류를 구분.</p>
+        <span class="feat-tag">단일 폴더 &middot; 파일명 기반 분류</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">&#x1F504;</div>
+        <h4>Init / Execute 분리 패턴</h4>
+        <p>폼과 주요 기능을 초기화(_Init)와 실행(_Execute)으로 이원화. 시스템 관리, 로그인, 컨트롤 관리 등에 적용.</p>
+        <span class="feat-tag">SysMng_Init + SysMng_Execute</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">&#x1F6E0;</div>
+        <h4>Dev / Prod 이원 구조</h4>
+        <p>로그인 로직에서 개발 모드와 프로덕션 모드를 완전히 분리. 각각 별도의 Init/Execute 모듈로 관리.</p>
+        <span class="feat-tag">Login_Init_Dev &middot; Login_Init_Prod</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">&#x1F3AF;</div>
+        <h4>기능별 세분화</h4>
+        <p>하나의 기능을 여러 모듈로 세분화하여 관리. 컨트롤 관리만 5개, 시스템 관리 4개, API별 최대 8개 모듈로 구성.</p>
+        <span class="feat-tag">세밀한 관심사 분리</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">&#x1F4DD;</div>
+        <h4>계층식 파일명</h4>
+        <p>CM_[카테고리]_[세부기능]_[상세기능] 형태의 일관된 파일명 규칙으로 모듈의 역할과 소속을 즉시 파악 가능.</p>
+        <span class="feat-tag">CM_Api_Dooray_App_Request</span>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">&#x1F510;</div>
+        <h4>독립 HTTP 클래스</h4>
+        <p>clsHttpClient 클래스 모듈로 HTTP 통신을 추상화. 모든 외부 API 호출이 이 클래스를 통해 이루어짐.</p>
+        <span class="feat-tag">clsHttpClient.cls</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== 4. 모듈 구성 ===== -->
+  <div class="section">
+    <div class="section-title">모듈 구성 (93개)</div>
+    <div class="module-grid">
+      <div class="module-card">
+        <div class="module-icon">&#x1F4E1;</div>
+        <h4>API 연동</h4>
+        <div class="module-count">13</div>
+        <div class="module-desc">Dooray 8 &middot; W-ERP 3<br>Supabase 1 &middot; 기타 1</div>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">&#x2699;</div>
+        <h4>공통 유틸리티</h4>
+        <div class="module-count">17</div>
+        <div class="module-desc">환경 &middot; 보안 &middot; 파일<br>JSON &middot; 검증 &middot; 변환</div>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">&#x1F4CA;</div>
+        <h4>기능 로직</h4>
+        <div class="module-count">24</div>
+        <div class="module-desc">컨트롤 &middot; 시스템 &middot; 개발자<br>배포 &middot; 저장 &middot; 검증</div>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">&#x1F511;</div>
+        <h4>로그인 / 인증</h4>
+        <div class="module-count">7</div>
+        <div class="module-desc">Dev/Prod 분리<br>인증코드 입력/요청</div>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">&#x1F4E6;</div>
+        <h4>관리 / 기타</h4>
+        <div class="module-count">19</div>
+        <div class="module-desc">페이지 &middot; 정렬 &middot; 에러<br>로그 &middot; 리본 &middot; DB</div>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">&#x1F5BC;</div>
+        <h4>UserForm</h4>
+        <div class="module-count">12</div>
+        <div class="module-desc">로그인 &middot; 시스템 &middot; 버전<br>배포 &middot; 정렬 &middot; 인증</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 5. 주요 모듈 상세 ===== -->
+  <div class="section">
+    <div class="section-title">주요 모듈 상세</div>
+    <table class="detail-table">
+      <thead>
+        <tr>
+          <th>분류</th>
+          <th>대표 모듈</th>
+          <th>역할</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="prefix">CM_Api_Dooray_*</td>
+          <td>Request, Wiki, SendMsg 등 8개</td>
+          <td>Dooray API 연동 (프로젝트, Wiki, 메신저)</td>
+        </tr>
+        <tr>
+          <td class="prefix">CM_Api_Woori_*</td>
+          <td>Request, Url, Parse_Data 3개</td>
+          <td>W-ERP API 연동 (인사, 계약, 근태)</td>
+        </tr>
+        <tr>
+          <td class="prefix">CM_App_*</td>
+          <td>Env, Security, Utils 등 17개</td>
+          <td>공통 유틸리티 (환경, 보안, 파일, JSON)</td>
+        </tr>
+        <tr>
+          <td class="prefix">CM_F_App_*</td>
+          <td>Save, Validate, Load 등 9개</td>
+          <td>앱 기능 (저장, 검증, 데이터 바인딩)</td>
+        </tr>
+        <tr>
+          <td class="prefix">CM_F_CtrlMng_*</td>
+          <td>Init, Save, Evt 등 5개</td>
+          <td>컨트롤 관리자 (이벤트, 초기화, 저장)</td>
+        </tr>
+        <tr>
+          <td class="prefix">CM_F_DevCtrl_*</td>
+          <td>Deploy, Backup, Upload 등 7개</td>
+          <td>개발자 도구 (배포, 백업, 버전 업로드)</td>
+        </tr>
+        <tr>
+          <td class="prefix">CM_F_SysMng*</td>
+          <td>Init, Execute 4개</td>
+          <td>시스템 관리 (시스템 정보 CRUD)</td>
+        </tr>
+        <tr>
+          <td class="prefix">CM_Login_*</td>
+          <td>Init/Execute &times; Dev/Prod 5개</td>
+          <td>로그인 로직 (개발/프로덕션 분리)</td>
+        </tr>
+        <tr>
+          <td class="prefix">CM_ErrorHandler</td>
+          <td>ErrorHandler 1개</td>
+          <td>공통 에러 핸들링</td>
+        </tr>
+        <tr>
+          <td class="prefix">CM_RibbonMenu</td>
+          <td>RibbonMenu 1개</td>
+          <td>리본 메뉴 콜백 (UI 진입점)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== 6. API 연계 구조 ===== -->
+  <div class="section">
+    <div class="section-title">API 연계 구조</div>
+    <div class="api-grid">
+      <div class="api-card">
+        <h4><span class="api-icon">&#x1F4AC;</span> Dooray</h4>
+        <ul class="api-list">
+          <li>API 요청/응답 처리 (Request)</li>
+          <li>JSON 변환 (ConvertToJson)</li>
+          <li>데이터 파싱 (Parse_Data)</li>
+          <li>프로젝트 정보 조회 (ProjectInfo)</li>
+          <li>Wiki 데이터/파일 조회 (Wiki_Fetch)</li>
+          <li>메신저 전송 (SendMsg)</li>
+          <li>URL 생성 (Url)</li>
+        </ul>
+        <span class="api-count">8개 모듈</span>
+      </div>
+      <div class="api-card">
+        <h4><span class="api-icon">&#x1F4CA;</span> W-ERP</h4>
+        <ul class="api-list">
+          <li>API 요청 (Request)</li>
+          <li>데이터 파싱 (Parse_Data)</li>
+          <li>URL 생성 (Url)</li>
+        </ul>
+        <span class="api-count">3개 모듈</span>
+      </div>
+      <div class="api-card">
+        <h4><span class="api-icon">&#x2601;</span> Supabase</h4>
+        <ul class="api-list">
+          <li>REST API 요청 (Request)</li>
+        </ul>
+        <span class="api-count">1개 모듈</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 7. 기술 스택 ===== -->
+  <div class="section">
+    <div class="section-title">기술 스택</div>
+    <div class="tech-row">
+      <span class="tech-badge"><span class="dot navy"></span>VBA (Excel 2016~365)</span>
+      <span class="tech-badge"><span class="dot blue"></span>clsHttpClient (HTTP 클래스)</span>
+      <span class="tech-badge"><span class="dot purple"></span>VBA-JSON</span>
+      <span class="tech-badge"><span class="dot orange"></span>RibbonX (CustomUI)</span>
+      <span class="tech-badge"><span class="dot green"></span>Dooray API</span>
+      <span class="tech-badge"><span class="dot blue"></span>W-ERP API</span>
+      <span class="tech-badge"><span class="dot green"></span>Supabase REST</span>
+    </div>
+  </div>
+
+  <!-- ===== 푸터 ===== -->
+  <div class="page-footer">
+    우리관리 업무개선팀 &middot; PAE Core Version 10 &middot; 2022 ~ 2025
+  </div>
+
+</div>
+</body>
+</html>
