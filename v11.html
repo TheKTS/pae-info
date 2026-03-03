@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAE Core Version 11 — 주요 변화</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Pretendard', '맑은 고딕', 'Malgun Gothic', sans-serif; background: #f5f7fa; color: #2d3748; line-height: 1.6; }
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+  /* ===== 헤더 ===== */
+  .page-header { text-align: center; margin-bottom: 44px; }
+  .page-header h1 { font-size: 30px; color: #1a3c6e; margin-bottom: 6px; letter-spacing: -0.5px; }
+  .page-header .subtitle { font-size: 15px; color: #4a5568; margin-bottom: 14px; }
+  .page-header .version-tag { display: inline-block; background: linear-gradient(135deg, #1a3c6e, #3182ce); color: #fff; font-size: 13px; font-weight: 700; padding: 5px 20px; border-radius: 20px; letter-spacing: 0.5px; }
+  .page-header .divider { width: 60px; height: 3px; background: #1a3c6e; margin: 18px auto 0; border-radius: 2px; }
+
+  /* ===== 섹션 공통 ===== */
+  .section { margin-bottom: 44px; }
+  .section-title { font-size: 20px; color: #1a3c6e; font-weight: 700; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 2px solid #1a3c6e; }
+
+  /* ===== 개요 박스 ===== */
+  .overview-box { background: #fff; border-radius: 12px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-left: 4px solid #1a3c6e; margin-bottom: 24px; }
+  .overview-box p { font-size: 14.5px; color: #4a5568; margin-bottom: 10px; }
+  .overview-box p:last-child { margin-bottom: 0; }
+  .overview-stats { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+  .overview-stat { flex: 1; min-width: 130px; background: #1a3c6e; color: #fff; border-radius: 10px; padding: 16px; text-align: center; }
+  .overview-stat .num { font-size: 28px; font-weight: 700; }
+  .overview-stat .label { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+
+  /* ===== 핵심 변화 그리드 ===== */
+  .v11-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+  .v11-card { flex: 1; min-width: 260px; max-width: calc(50% - 7px); background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid #3182ce; }
+  .v11-card .v11-icon { font-size: 26px; margin-bottom: 8px; }
+  .v11-card h4 { font-size: 14px; color: #1a3c6e; margin-bottom: 8px; }
+  .v11-card p { font-size: 12.5px; color: #4a5568; line-height: 1.55; }
+  .v11-card .v11-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #ebf4ff; color: #2b6cb0; font-weight: 500; margin-top: 10px; }
+
+  /* ===== Before / After 비교 ===== */
+  .compare-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+  .compare-col { flex: 1; min-width: 250px; background: #fff; border-radius: 10px; padding: 22px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .compare-col.before { border-top: 3px solid #a0aec0; }
+  .compare-col.after { border-top: 3px solid #3182ce; }
+  .compare-col h4 { font-size: 14px; margin-bottom: 12px; }
+  .compare-col.before h4 { color: #718096; }
+  .compare-col.after h4 { color: #3182ce; }
+  .compare-item { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; font-size: 13px; color: #4a5568; }
+  .compare-item .icon { flex-shrink: 0; width: 18px; text-align: center; font-weight: 700; }
+  .compare-col.before .icon { color: #a0aec0; }
+  .compare-col.after .icon { color: #3182ce; }
+
+  /* ===== 모듈 구성 ===== */
+  .module-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+  .module-card { flex: 1; min-width: 200px; background: #fff; border-radius: 10px; padding: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; }
+  .module-card .module-icon { font-size: 28px; margin-bottom: 6px; }
+  .module-card h4 { font-size: 13px; color: #1a3c6e; margin-bottom: 6px; }
+  .module-card .module-count { font-size: 22px; font-weight: 700; color: #3182ce; }
+  .module-card .module-desc { font-size: 11.5px; color: #718096; margin-top: 4px; }
+
+  /* ===== DB 테이블 ===== */
+  .db-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .db-table thead { background: #1a3c6e; color: #fff; }
+  .db-table th { padding: 10px 14px; font-size: 12.5px; font-weight: 600; text-align: left; }
+  .db-table td { padding: 9px 14px; font-size: 12.5px; color: #4a5568; border-bottom: 1px solid #edf2f7; }
+  .db-table tr:last-child td { border-bottom: none; }
+  .db-table .table-name { font-weight: 600; color: #2b6cb0; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; }
+
+  /* ===== 기술 스택 뱃지 ===== */
+  .tech-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .tech-badge { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 14px; font-size: 13px; color: #2d3748; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .tech-badge .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .tech-badge .dot.blue { background: #3182ce; }
+  .tech-badge .dot.green { background: #38a169; }
+  .tech-badge .dot.purple { background: #805ad5; }
+  .tech-badge .dot.orange { background: #dd6b20; }
+  .tech-badge .dot.navy { background: #1a3c6e; }
+
+  /* ===== 푸터 ===== */
+  .page-footer { text-align: center; padding: 30px 0 10px; font-size: 12px; color: #a0aec0; border-top: 1px solid #e2e8f0; margin-top: 20px; }
+
+  /* ===== 반응형 ===== */
+  @media (max-width: 700px) {
+    .v11-card { max-width: 100%; }
+    .module-card { min-width: 140px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ===== 헤더 ===== -->
+  <div class="page-header">
+    <h1>PAE Core Version 11</h1>
+    <div class="subtitle">주요 변화 소개</div>
+    <span class="version-tag">v10 &#x2192; v11 Major Update &middot; 2025. 11</span>
+    <div class="divider"></div>
+  </div>
+
+  <!-- ===== 1. 업데이트 개요 ===== -->
+  <div class="section">
+    <div class="section-title">업데이트 개요</div>
+    <div class="overview-box">
+      <p><strong>PAE Core Version 11</strong>은 기존 v10의 레거시 구조를 전면 재설계한 대규모 업데이트입니다. 비구조화된 코드를 도메인별로 분류하고, 클라우드 DB를 도입하여 시스템 관리·배포·권한·로깅을 자동화했습니다.</p>
+      <p>이번 업데이트를 통해 PAE는 단순한 자동화 도구에서 <strong>체계적으로 관리되는 엔터프라이즈 플랫폼</strong>으로 진화했습니다.</p>
+    </div>
+    <div class="overview-stats">
+      <div class="overview-stat">
+        <div class="num">54</div>
+        <div class="label">Core 모듈</div>
+      </div>
+      <div class="overview-stat" style="background: #2c5282;">
+        <div class="num">8</div>
+        <div class="label">DB 테이블</div>
+      </div>
+      <div class="overview-stat" style="background: #2b6cb0;">
+        <div class="num">7</div>
+        <div class="label">배포 자동화 단계</div>
+      </div>
+      <div class="overview-stat" style="background: #3182ce;">
+        <div class="num">12</div>
+        <div class="label">UserForm</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 2. 핵심 변화 ===== -->
+  <div class="section">
+    <div class="section-title">핵심 변화 6가지</div>
+    <div class="v11-grid">
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x1F3D7;</div>
+        <h4>모듈 아키텍처 재설계</h4>
+        <p>비구조화된 레거시 코드(CM_/CF_ 접두어)를 도메인별로 분류하고, 54개 모듈을 계층적으로 재구성. 유지보수성과 확장성을 대폭 향상.</p>
+        <span class="v11-tag">54개 모듈 &middot; 도메인별 구조화</span>
+      </div>
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x2601;</div>
+        <h4>클라우드 DB 도입</h4>
+        <p>Supabase 기반 8개 테이블을 신설하여 시스템 메타정보, 버전, 권한, 에러 로그, 배포 이력 등을 클라우드에서 통합 관리.</p>
+        <span class="v11-tag">Supabase &middot; 8개 테이블</span>
+      </div>
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x1F680;</div>
+        <h4>배포 자동화</h4>
+        <p>7단계 배포 파이프라인을 구축하여, 개발 완료 후 원클릭으로 시스템 배포 &middot; 버전 등록 &middot; 이력 기록까지 자동 수행.</p>
+        <span class="v11-tag">7단계 원클릭 배포</span>
+      </div>
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x1F512;</div>
+        <h4>사용자 권한 체계</h4>
+        <p>기존 하드코딩 방식을 DB 기반 권한 테이블로 전환. 시스템별 접근 제어, 개인정보 동의 이력까지 체계적으로 관리.</p>
+        <span class="v11-tag">DB 기반 권한 CRUD</span>
+      </div>
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x1F4CB;</div>
+        <h4>시스템 관제 강화</h4>
+        <p>에러 로그 자동 기록, 로그인 이력 추적, 4개 카테고리 시스템 진단 기능을 도입하여 실시간 운영 모니터링 체계 구축.</p>
+        <span class="v11-tag">에러 로그 &middot; 진단 &middot; 모니터링</span>
+      </div>
+
+      <div class="v11-card">
+        <div class="v11-icon">&#x1F310;</div>
+        <h4>API 연계 중앙화</h4>
+        <p>Dooray &middot; W-ERP &middot; SNC-ERP 등 외부 시스템 연계를 중앙화된 Core/Endpoint 패턴으로 통합. 인증 자동 주입, URL 빌더 표준화.</p>
+        <span class="v11-tag">Core/Endpoint 패턴</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== 3. Before / After ===== -->
+  <div class="section">
+    <div class="section-title">Before / After 비교</div>
+    <div class="compare-grid">
+      <div class="compare-col before">
+        <h4>&#x23EA; Before (v10)</h4>
+        <div class="compare-item"><span class="icon">&#x2716;</span> 수동 배포 (파일 복사 후 수동 교체)</div>
+        <div class="compare-item"><span class="icon">&#x2716;</span> 하드코딩 권한 관리</div>
+        <div class="compare-item"><span class="icon">&#x2716;</span> 에러 로그 미기록</div>
+        <div class="compare-item"><span class="icon">&#x2716;</span> 비구조화 모듈 (CM_/CF_ 접두어)</div>
+        <div class="compare-item"><span class="icon">&#x2716;</span> API 연계 개별 구현</div>
+        <div class="compare-item"><span class="icon">&#x2716;</span> 개인정보 관리 미구현</div>
+        <div class="compare-item"><span class="icon">&#x2716;</span> 프로시저 패턴 제각각</div>
+      </div>
+      <div class="compare-col after">
+        <h4>&#x23E9; After (v11)</h4>
+        <div class="compare-item"><span class="icon">&#x2714;</span> 7단계 원클릭 자동 배포 + 이력 기록</div>
+        <div class="compare-item"><span class="icon">&#x2714;</span> DB 기반 권한 CRUD + 접근 제어</div>
+        <div class="compare-item"><span class="icon">&#x2714;</span> 에러 &middot; 로그인 &middot; 배포 이력 자동 기록</div>
+        <div class="compare-item"><span class="icon">&#x2714;</span> 도메인별 54개 모듈 구조화 (m_/u_)</div>
+        <div class="compare-item"><span class="icon">&#x2714;</span> 중앙화된 Core/Endpoint 패턴</div>
+        <div class="compare-item"><span class="icon">&#x2714;</span> 개인정보 동의 + 정책 관리 + 이력</div>
+        <div class="compare-item"><span class="icon">&#x2714;</span> Initialize/Finalize 공통 라이프사이클</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 4. 모듈 구성 ===== -->
+  <div class="section">
+    <div class="section-title">모듈 구성 (54개)</div>
+    <div class="module-grid">
+      <div class="module-card">
+        <div class="module-icon">&#x2699;</div>
+        <h4>Core 인프라</h4>
+        <div class="module-count">14</div>
+        <div class="module-desc">환경 &middot; 보안 &middot; 인증<br>라이프사이클 &middot; 시스템체크</div>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">&#x1F4E1;</div>
+        <h4>API 연계</h4>
+        <div class="module-count">8</div>
+        <div class="module-desc">Dooray 4 &middot; ERP 3<br>Supabase 1</div>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">&#x1F4E6;</div>
+        <h4>시스템 관리</h4>
+        <div class="module-count">8</div>
+        <div class="module-desc">시스템 &middot; 버전 &middot; 배포<br>진단 &middot; 로그</div>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">&#x1F4CA;</div>
+        <h4>비즈니스 로직</h4>
+        <div class="module-count">12</div>
+        <div class="module-desc">페이지 &middot; 권한 &middot; 설정<br>리본 &middot; 셋업</div>
+      </div>
+      <div class="module-card">
+        <div class="module-icon">&#x1F5BC;</div>
+        <h4>UserForm</h4>
+        <div class="module-count">12</div>
+        <div class="module-desc">인증 &middot; 관리 &middot; 배포<br>동의 &middot; 필터 &middot; 정렬</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 5. DB 스키마 ===== -->
+  <div class="section">
+    <div class="section-title">클라우드 DB 스키마 (Supabase)</div>
+    <table class="db-table">
+      <thead>
+        <tr>
+          <th>테이블</th>
+          <th>용도</th>
+          <th>주요 필드</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="table-name">pae_sys_meta</td>
+          <td>시스템 메타정보</td>
+          <td>시스템명, 버전, 상태, 서비스 점검모드</td>
+        </tr>
+        <tr>
+          <td class="table-name">pae_ver_meta</td>
+          <td>버전 메타정보</td>
+          <td>버전코드, 릴리즈노트, 최소필수버전</td>
+        </tr>
+        <tr>
+          <td class="table-name">pae_permission</td>
+          <td>사용자 권한</td>
+          <td>사용자ID, 시스템, 역할, 접근레벨</td>
+        </tr>
+        <tr>
+          <td class="table-name">pae_error_log</td>
+          <td>에러 로그</td>
+          <td>에러코드, 모듈, 프로시저, 스택</td>
+        </tr>
+        <tr>
+          <td class="table-name">pae_login_log</td>
+          <td>로그인 이력</td>
+          <td>사용자, 시스템, IP, 타임스탬프</td>
+        </tr>
+        <tr>
+          <td class="table-name">pae_deploy_history</td>
+          <td>배포 이력</td>
+          <td>배포자, 버전, 단계, 결과</td>
+        </tr>
+        <tr>
+          <td class="table-name">pae_privacy_policy</td>
+          <td>개인정보처리방침</td>
+          <td>정책버전, 내용, 시행일</td>
+        </tr>
+        <tr>
+          <td class="table-name">pae_privacy_consent</td>
+          <td>개인정보 동의 이력</td>
+          <td>사용자, 정책버전, 동의일시</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== 6. 기술 스택 ===== -->
+  <div class="section">
+    <div class="section-title">기술 스택</div>
+    <div class="tech-row">
+      <span class="tech-badge"><span class="dot navy"></span>VBA (Excel 2016~365)</span>
+      <span class="tech-badge"><span class="dot green"></span>Supabase (PostgreSQL)</span>
+      <span class="tech-badge"><span class="dot blue"></span>REST API (WinHttpRequest)</span>
+      <span class="tech-badge"><span class="dot purple"></span>VBA-JSON v2.3.1</span>
+      <span class="tech-badge"><span class="dot orange"></span>RibbonX (CustomUI 14)</span>
+      <span class="tech-badge"><span class="dot green"></span>Dooray API</span>
+      <span class="tech-badge"><span class="dot blue"></span>W-ERP / SNC-ERP API</span>
+      <span class="tech-badge"><span class="dot purple"></span>JWT 토큰 인증</span>
+    </div>
+  </div>
+
+  <!-- ===== 푸터 ===== -->
+  <div class="page-footer">
+    우리관리 업무개선팀 &middot; PAE Core Version 11 &middot; 2025. 11
+  </div>
+
+</div>
+</body>
+</html>
